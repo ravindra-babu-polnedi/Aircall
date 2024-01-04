@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Aircall/static/css/main.4d7b3ce8.css",
+    "main.js": "/Aircall/static/js/main.d8977550.js",
+    "index.html": "/Aircall/index.html",
+    "main.4d7b3ce8.css.map": "/Aircall/static/css/main.4d7b3ce8.css.map",
+    "main.d8977550.js.map": "/Aircall/static/js/main.d8977550.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4d7b3ce8.css",
+    "static/js/main.d8977550.js"
+  ]
+}
