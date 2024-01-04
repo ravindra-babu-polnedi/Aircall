@@ -51,3 +51,13 @@
   box-shadow: none;
   height: 40px;
 }
+
+.outline-call {
+  font-size: 1.5em;
+  color: #19bf56;
+}
+
+.archive-icon {
+  font-size: 1.3em;
+  color: #19bf56;
+}

@@ -1,0 +1,17 @@
+.tab {
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  color: #19bf56;
+  font-size: large;
+  font-weight: 700;
+}
+.active-tab-btn {
+  border-bottom: solid 3px #19bf56;
+}
+
+.tab-btn {
+  padding-bottom: 0px;
+  cursor: pointer;
+  font-size: medium;
+}

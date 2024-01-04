@@ -5,6 +5,8 @@ import { FaVoicemail } from "react-icons/fa6";
 import { IoIosCall } from "react-icons/io";
 import { MdOutlineCallReceived, MdOutlineCallMade } from "react-icons/md";
 import { BiArchiveIn, BiArchiveOut } from "react-icons/bi";
+import { toast } from "react-toastify";
+import { BASE_URL, TOAST_OPTIONS } from "../../config";
 
 const Call = ({
   direction,
@@ -22,42 +24,36 @@ const Call = ({
   let DirectionToRender;
   let componentToRender;
 
+  const condition = clicked === true;
+  const upperContainerStyle = condition ? "upper-container" : "";
+  const lowerContainerStyle = condition ? "lower-container" : "";
+
   if (direction === "outbound") {
     NumberToRender = to;
-    DirectionToRender = (
-      <MdOutlineCallMade style={{ fontSize: "1.5em", color: "#19bf56" }} />
-    );
+    DirectionToRender = <MdOutlineCallMade className="outline-call" />;
   } else {
     NumberToRender = from;
-    DirectionToRender = (
-      <MdOutlineCallReceived style={{ fontSize: "1.5em", color: "#19bf56" }} />
-    );
+    DirectionToRender = <MdOutlineCallReceived className="outline-call" />;
   }
 
   switch (call_type) {
     case "answered":
-      componentToRender = (
-        <IoIosCall style={{ fontSize: "1.5em", color: "#19bf56" }} />
-      );
+      componentToRender = <IoIosCall className="outline-call" />;
       break;
     case "missed":
-      componentToRender = (
-        <MdPhoneMissed style={{ fontSize: "1.5em", color: "#19bf56" }} />
-      );
+      componentToRender = <MdPhoneMissed className="outline-call" />;
       break;
     case "voicemail":
-      componentToRender = (
-        <FaVoicemail style={{ fontSize: "1.5em", color: "#19bf56" }} />
-      );
+      componentToRender = <FaVoicemail className="outline-call" />;
       break;
     default:
       componentToRender = null;
   }
 
-  const onClickArchive = async (Archive) => {
+  const onClickArchive = async (archive) => {
     let value;
-    Archive === "in" ? (value = true) : (value = false);
-    console.log("id", id);
+    archive === "in" ? (value = true) : (value = false);
+
     const options = {
       method: "PATCH",
       headers: {
@@ -68,13 +64,18 @@ const Call = ({
       }),
     };
 
-    const res = await fetch(
-      `https://cerulean-marlin-wig.cyclic.app/activities/${id}`,
-      options
-    );
-    console.log("res", res);
+    const res = await fetch(`${BASE_URL}/activities/${id}`, options);
+
     if (res.ok === true && res.status === 200) {
       updateCallData(id, value);
+      toast.success(
+        `${
+          archive === "in"
+            ? "Call archived successfully!"
+            : "unarchived successfully!"
+        }`,
+        TOAST_OPTIONS
+      );
     }
   };
 
@@ -94,11 +95,9 @@ const Call = ({
     setClicked((prevState) => !prevState);
   };
 
-  const upperStyle = clicked === true ? "upper-container" : "";
-  const lowerStyle = clicked === true ? "lower-container" : "";
   return (
     <div className="outer-container" onClick={onclick}>
-      <div className={`call-container ${upperStyle}`}>
+      <div className={`call-container ${upperContainerStyle}`}>
         <div>{DirectionToRender}</div>
 
         <div className="number">{NumberToRender}</div>
@@ -113,7 +112,7 @@ const Call = ({
                 e.stopPropagation();
               }}
             >
-              <BiArchiveOut style={{ fontSize: "1.3em", color: "#19bf56" }} />
+              <BiArchiveOut className="archive-icon" />
             </div>
           ) : (
             <div
@@ -122,13 +121,13 @@ const Call = ({
                 e.stopPropagation();
               }}
             >
-              <BiArchiveIn style={{ fontSize: "1.3em", color: "#19bf56" }} />
+              <BiArchiveIn className="archive-icon" />
             </div>
           )}
         </div>
       </div>
       {clicked && (
-        <div className={`call-container second ${lowerStyle}`}>
+        <div className={`call-container second ${lowerContainerStyle}`}>
           <div className="number">{formatDuration(duration)}</div>
           <div className="number">{call_type}</div>
         </div>

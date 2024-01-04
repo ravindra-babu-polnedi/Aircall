@@ -21,33 +21,3 @@
 .hideScroll::-webkit-scrollbar {
   display: none;
 }
-
-.tab {
-  padding-top: 10px;
-  display: flex;
-  justify-content: space-around;
-  color: #19bf56;
-  font-size: large;
-  font-weight: 700;
-}
-
-.active-tab-btn {
-  border-bottom: solid 3px #19bf56;
-}
-
-.tab-btn {
-  padding-bottom: 0px;
-  cursor: pointer;
-  font-size: medium;
-}
-
-.archive-all {
-  color: #19bf56;
-  padding-top: 1px;
-  padding-bottom: 5px;
-  display: flex;
-  font-size: 15px;
-  justify-content: center;
-  align-items: center;
-  margin-top: 15px;
-}

@@ -1,0 +1,29 @@
+.archive-all {
+  color: #19bf56;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  display: flex;
+  font-size: 15px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.icon {
+  margin-left: 10px;
+  cursor: pointer;
+}
+.font-1 {
+  font-size: 0.9em;
+}
+.font-2 {
+  font-size: 1.1em;
+}
+
+.text {
+  font-size: 16px;
+  color: #19bf56;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}

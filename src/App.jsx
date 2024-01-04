@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import Header from "./Header.jsx";
-import Call from "./components/Call/index.jsx";
-import { BsFillArchiveFill } from "react-icons/bs";
-import { LuArchive } from "react-icons/lu";
+import Call from "./components/Call";
+import Tab from "./components/Tab";
+import ArchiveAll from "./components/ArchiveAll";
+import { BASE_URL, TOAST_OPTIONS } from "./config.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -21,37 +22,32 @@ const App = () => {
     setcallData(updatedData);
   };
 
-  const archive = async (val) => {
+  const onClickArchiveAll = async (val) => {
     let isArchive;
     val === "all" ? (isArchive = false) : (isArchive = true);
-    const filteredData = callData.filter(
+    const filteredData = callData?.filter(
       (item) => item.is_archived === isArchive && item.direction && item.from
     );
 
-    const options = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        is_archived: !isArchive,
-      }),
-    };
-
-    const fetchPromises = filteredData.map(async (item) => {
-      const res = await fetch(
-        `https://cerulean-marlin-wig.cyclic.app/activities/${item.id}`,
-        options
-      );
-      return res;
-    });
-
     try {
+      const options = {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          is_archived: !isArchive,
+        }),
+      };
+      const fetchPromises = filteredData.map(async (item) => {
+        const res = await fetch(`${BASE_URL}/activities/${item.id}`, options);
+        return res;
+      });
       await Promise.all(fetchPromises);
       await fetchData();
     } catch (error) {
       console.error("One or more requests failed:", error);
-      toast.error(`${error.message}`);
+      toast.error(`${error.message}(Too Many Requests)`, TOAST_OPTIONS);
     }
   };
 
@@ -63,16 +59,15 @@ const App = () => {
       const data = await res.json();
 
       setcallData(data);
-      setActiveTab("Activity");
     } catch (error) {
       console.error("something went wrong fetching data:", error);
-      toast.error(`${JSON.stringify(error.message)}`);
+      toast.error(error.message, TOAST_OPTIONS);
     }
   };
 
   const getFilteredData = () => {
     let isArchive = activeTab === "Archive";
-    const filteredData = callData.filter(
+    const filteredData = callData?.filter(
       (item) => item.is_archived === isArchive && item.direction && item.from
     );
     return filteredData;
@@ -89,51 +84,12 @@ const App = () => {
   return (
     <div className="container">
       <Header />
-      <div className="tab">
-        <h1
-          className={isActivity ? `tab-btn ${"active-tab-btn"}` : "tab-btn"}
-          onClick={() => {
-            setActiveTab("Activity");
-          }}
-        >
-          Activity Feed
-        </h1>
-        <h1
-          className={!isActivity ? `tab-btn ${"active-tab-btn"}` : "tab-btn"}
-          onClick={() => {
-            setActiveTab("Archive");
-          }}
-        >
-          Archived Calls
-        </h1>
-      </div>
-      {activeTab === "Activity" ? (
-        <div className="archive-all">
-          <span>Archive all</span>
-          <div onClick={async () => await archive("all")}>
-            <BsFillArchiveFill
-              style={{
-                fontSize: "0.9em",
-                marginLeft: "10px",
-                cursor: "pointer",
-              }}
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="archive-all">
-          <span>unarchive all</span>
-          <div
-            onClick={async () => {
-              await archive("un");
-            }}
-          >
-            <LuArchive
-              style={{ fontSize: "1em", marginLeft: "10px", cursor: "pointer" }}
-            />
-          </div>
-        </div>
-      )}
+      <Tab setActiveTab={setActiveTab} isActivity={isActivity} />
+      <ArchiveAll
+        activeTab={activeTab}
+        onClickArchiveAll={onClickArchiveAll}
+        dataLength={filteredData.length}
+      />
       <div className="container-view hideScroll">
         {filteredData.map((item) => {
           return (
@@ -141,11 +97,15 @@ const App = () => {
           );
         })}
       </div>
-      <ToastContainer />
+      <ToastContainer
+        style={{
+          height: "30px",
+          fontSize: "12px",
+        }}
+      />
     </div>
   );
 };
 
 ReactDOM.render(<App />, document.getElementById("app"));
-
 export default App;
